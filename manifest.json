@@ -1,0 +1,32 @@
+{
+  "name": "Screen Recorder",
+  "description": "A browser extension to record your screen.",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "minimum_chrome_version": "116",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/not-recording.png",
+      "32": "icons/not-recording.png"
+    }
+  },
+  "host_permissions": ["https://*/*", "http://*/*"],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "permissions": [
+    "tabCapture",
+    "offscreen",
+    "scripting",
+    "storage",
+    "tabs",
+    "desktopCapture"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["camera.html", "camera.js", "video.html", "video.js"],
+      "matches": ["https://*/*", "http://*/*"]
+    }
+  ]
+}
