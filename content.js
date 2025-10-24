@@ -1,3 +1,5 @@
+// This file will inject an iframe into the current webpage, that has permission to access the user's camera and microphone.
+
 const cameraId = "rusty-camera";
 
 const camera = document.getElementById(cameraId);
@@ -6,20 +8,27 @@ const camera = document.getElementById(cameraId);
 if (camera) {
   console.log("camera found", camera);
 } else {
-  const cameraElement = document.createElement("div");
+  const cameraElement = document.createElement("iframe");
   cameraElement.id = cameraId;
   cameraElement.setAttribute(
     "style",
     `
+    all: initial;
     position: fixed;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     background: black;
     z-index: 999999;
-    top: 0;
-    right: 0;
+    top: 10px;
+    right: 10px;
+    border: none;
     `
   );
+
+  // set permissions on iframe for camera and microphone
+  cameraElement.setAttribute("allow", "camera; microphone;");
+
+  cameraElement.src = chrome.runtime.getURL("camera.html");
   document.body.appendChild(cameraElement);
 }
