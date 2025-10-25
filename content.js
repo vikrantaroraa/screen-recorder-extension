@@ -18,7 +18,7 @@ if (camera) {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background: black;
+    background: transparent;
     z-index: 999999;
     top: 10px;
     right: 10px;
