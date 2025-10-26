@@ -1,7 +1,7 @@
 const recordTab = document.getElementById("tab");
 const recordScreen = document.getElementById("screen");
 
-const runCode = async () => {
+const injectCamera = async () => {
   // Inject the content script into the active tab when the popup is opened
   const tab = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -30,7 +30,7 @@ const checkRecordingStatus = async () => {
 
 const init = async () => {
   const recordingState = await checkRecordingStatus();
-
+  console.log("Initial recording state in popup.js:- ", recordingState);
   if (recordingState[0] === true) {
     if (recordingState[1] === "tab") {
       recordTab.innerText = "Stop Recording Tab";
@@ -40,18 +40,36 @@ const init = async () => {
   }
 
   // Listen for when either of 'Record Tab' or 'Record Screen' buttons are clicked
-  const startRecording = async (type) => {
-    console.log(`Starting ${type} recording...`);
+  const updateRecording = async (type) => {
+    console.log(`Starting recording:- ${type}`);
+
+    const recordingState = await checkRecordingStatus();
+
+    if (recordingState[0] === true) {
+      // send message to service-worker to stop recording
+      chrome.runtime.sendMessage({
+        type: "stop-recording",
+      });
+    } else {
+      // send message to service-worker to start recording
+      chrome.runtime.sendMessage({
+        type: "start-recording",
+        recordingType: type,
+      });
+      injectCamera();
+    }
+    //close the popup after button click
+    window.close();
   };
 
   recordTab.addEventListener("click", async () => {
     console.log("Record Tab button clicked");
-    startRecording("tab");
+    updateRecording("tab");
   });
 
   recordScreen.addEventListener("click", async () => {
     console.log("Record Screen button clicked");
-    startRecording("screen");
+    updateRecording("screen");
   });
 };
 

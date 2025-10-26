@@ -1,11 +1,11 @@
 // This file will inject an iframe into the current webpage, that has permission to access the user's camera and microphone.
 
-const cameraId = "rusty-camera";
+window.cameraId = "rusty-camera";
 
-const camera = document.getElementById(cameraId);
+window.camera = document.getElementById(cameraId);
 
 // Check if the camera iframe already exists
-if (camera) {
+if (window.camera) {
   console.log("camera found", camera);
 } else {
   const cameraElement = document.createElement("iframe");
