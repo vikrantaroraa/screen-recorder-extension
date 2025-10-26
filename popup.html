@@ -4,9 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      body {
+        width: 280px;
+        height: 100px;
+        margin: 0;
+        padding: 0;
+      }
+      div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+    </style>
   </head>
   <body>
-    <h1>Popup</h1>
+    <div>
+      <h1>Record Options</h1>
+      <div>
+        <button id="tab">Record Tab</button>
+        <button id="screen">Record Screen</button>
+      </div>
+    </div>
     <script src="./popup.js"></script>
   </body>
 </html>
