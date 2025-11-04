@@ -25,7 +25,13 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["camera.html", "camera.js", "video.html", "video.js"],
+      "resources": [
+        "camera.html",
+        "camera.js",
+        "video.html",
+        "video.js",
+        "offscreen.html"
+      ],
       "matches": ["https://*/*", "http://*/*"]
     }
   ]
