@@ -62,6 +62,7 @@ const recordTabState = async (start = true) => {
       data: streamId,
     });
   } else {
+    console.log("start video value:- ", start);
     // send message to offscreen document to stop recording
     chrome.runtime.sendMessage({
       type: "stop-recording",
@@ -98,7 +99,7 @@ const stopRecording = async () => {
 };
 
 // Add a listener for the 'Record Screen' button
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender) => {
   console.log("Service Worker received message:- ", request, sender);
   switch (request.type) {
     case "start-recording":
@@ -110,5 +111,4 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     default:
       console.log("default");
   }
-  return true;
 });
