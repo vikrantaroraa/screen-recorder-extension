@@ -7,6 +7,8 @@ window.camera = document.getElementById(cameraId);
 // Check if the camera iframe already exists
 if (window.camera) {
   console.log("camera found", camera);
+  // make sure camera is visible
+  window.camera.style.display = "block";
 } else {
   const cameraElement = document.createElement("iframe");
   cameraElement.id = cameraId;
@@ -31,4 +33,5 @@ if (window.camera) {
 
   cameraElement.src = chrome.runtime.getURL("camera.html");
   document.body.appendChild(cameraElement);
+  document.getElementById(cameraId).style.display = "block";
 }

@@ -19,6 +19,28 @@ const injectCamera = async () => {
   });
 };
 
+const removeCamera = async () => {
+  // Inject the content script into the active tab when the popup is opened
+  const tab = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  if (!tab) {
+    console.error("No active tab found.");
+    return;
+  }
+
+  const tabId = tab[0].id;
+  console.log("Inject into tab:- ", tabId);
+
+  await chrome.scripting.executeScript({
+    func: () => {
+      const cameraElement = document.getElementById("rusty-camera");
+      if (!cameraElement) return;
+      cameraElement.style.display = "none";
+    },
+    target: { tabId },
+  });
+};
+
 //Check chrome storage if recording is already in progress
 const checkRecordingStatus = async () => {
   const result = await chrome.storage.local.get(["recording", "type"]);
@@ -40,8 +62,8 @@ const init = async () => {
   }
 
   // Listen for when either of 'Record Tab' or 'Record Screen' buttons are clicked
-  const updateRecording = async (type) => {
-    console.log(`Starting recording:- ${type}`);
+  const updateRecording = async (recordingType) => {
+    console.log(`Starting recording:- ${recordingType}`);
 
     const recordingState = await checkRecordingStatus();
 
@@ -50,11 +72,12 @@ const init = async () => {
       chrome.runtime.sendMessage({
         type: "stop-recording",
       });
+      removeCamera();
     } else {
       // send message to service-worker to start recording
       chrome.runtime.sendMessage({
         type: "start-recording",
-        recordingType: type,
+        recordingType: recordingType,
       });
       injectCamera();
     }
