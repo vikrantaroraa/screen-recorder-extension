@@ -1,5 +1,22 @@
-// listen for messages from the service worker:- start recording, stop recording
+const convertBlobToBase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = () => {
+      const base64data = reader.result;
+      resolve(base64data);
+    };
+  });
+};
 
+const fetchBlob = async (url) => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const base64 = await convertBlobToBase64(blob);
+  return base64;
+};
+
+// listen for messages from the service worker:- start recording, stop recording
 chrome.runtime.onMessage.addListener(async (request, sender) => {
   console.log("desktopRecord.js received message:- ", request, sender);
 
@@ -85,14 +102,18 @@ const startVideoRecording = async (focusedTabId) => {
           }
         };
 
-        recorder.onstop = () => {
+        recorder.onstop = async () => {
           console.log("Recording stopped");
-          // send the data to service-worker
-          console.log("Sending recorded data to service-worker", data);
-          // convert data array to blob and open window to play the video
-          // const blob = new Blob(data, { type: "video/webm" });
-          // const url = URL.createObjectURL(blob);
-          // window.open(url);
+          // convert data array to blob
+          const blobFile = new Blob(data, { type: "video/webm" });
+          const base64 = await fetchBlob(URL.createObjectURL(blobFile));
+
+          // send message to service-worker with the recorded data in base64 format to open tab
+          console.log("Sending recorded data to service-worker:- ", base64);
+          chrome.runtime.sendMessage({
+            type: "open-tab",
+            base64,
+          });
 
           data = [];
         };

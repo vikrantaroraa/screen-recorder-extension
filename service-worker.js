@@ -193,6 +193,28 @@ const stopRecording = async () => {
   recordTabState(false);
 };
 
+const openTabWithRecordedVideo = async (request) => {
+  console.log("openTabWithRecordedVideo called:- ", request);
+
+  // the message will either have a base64 or url property
+  const { url: videoUrl, base64 } = request;
+
+  if (!videoUrl && !base64) return;
+
+  // open tab
+  const url = chrome.runtime.getURL("video.html");
+  const newTab = await chrome.tabs.create({ url });
+
+  //send message to the video.html tab to play the video
+  setTimeout(() => {
+    chrome.tabs.sendMessage(newTab.id, {
+      type: "play-video",
+      videoUrl,
+      base64,
+    });
+  }, 500);
+};
+
 // Add a listener for the 'Record Screen' button
 chrome.runtime.onMessage.addListener((request, sender) => {
   // console.log("Service Worker received message:- ", request, sender);
@@ -203,6 +225,8 @@ chrome.runtime.onMessage.addListener((request, sender) => {
     case "stop-recording":
       stopRecording();
       break;
+    case "open-tab":
+      openTabWithRecordedVideo(request);
     default:
       console.log("default");
   }

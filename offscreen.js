@@ -90,7 +90,8 @@ const startTheRecording = async (streamId) => {
       // convert data array to blob and open window to play the video
       const blob = new Blob(data, { type: "video/webm" });
       const url = URL.createObjectURL(blob);
-      window.open(url);
+      // send message to service-worker to open tab with the recorded data url
+      chrome.runtime.sendMessage({ type: "open-tab", url });
     };
 
     // start recording
